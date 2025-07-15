@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Find Your Perfect PG</h1>
+                <p class="lead">Discover comfortable and affordable PG accommodations in your preferred location. Connect with verified PG owners and book your ideal home away from home.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('main.search') }}" class="btn btn-light btn-lg">Search PGs</a>
+                    {% if not current_user.is_authenticated %}
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">Join Now</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{{ url_for('static', filename='img/hero-image.jpg') }}" alt="PG Finder" class="img-fluid rounded shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4">Quick Search</h4>
+                        <form action="{{ url_for('main.search') }}" method="GET">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <select name="city" class="form-select" required>
+                                        <option value="">Select City</option>
+                                        {% for city in cities %}
+                                            <option value="{{ city }}">{{ city }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="pg_type" class="form-select">
+                                        <option value="">Any Type</option>
+                                        <option value="boys">Boys Only</option>
+                                        <option value="girls">Girls Only</option>
+                                        <option value="co-ed">Co-ed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">Why Choose PG Finder?</h2>
+                <p class="lead">We make finding your perfect PG accommodation easy and hassle-free</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Easy Search</h5>
+                        <p class="card-text">Find PGs based on your location, budget, and preferences with our advanced search filters.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Verified Listings</h5>
+                        <p class="card-text">All PG listings are verified by our team to ensure authenticity and quality.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Trusted Community</h5>
+                        <p class="card-text">Connect with verified PG owners and read reviews from real users.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent PGs Section -->
+{% if pgs %}
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2 class="fw-bold text-center">Recent PG Listings</h2>
+                <p class="text-center text-muted">Check out the latest PG accommodations available</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for pg in pgs %}
+            <div class="col-md-4">
+                <div class="card pg-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pg.name }}</h5>
+                        <p class="card-text">
+                            <i class="fas fa-map-marker-alt text-primary"></i> {{ pg.city }}, {{ pg.state }}<br>
+                            <i class="fas fa-rupee-sign text-success"></i> ₹{{ pg.rent_amount }}/month<br>
+                            <i class="fas fa-bed text-info"></i> {{ pg.room_type|title }} • {{ pg.pg_type|title }}
+                        </p>
+                        <div class="mb-2">
+                            {% for facility in pg.get_facilities()[:3] %}
+                                <span class="facilities-badge">{{ facility }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="rating">
+                                {% for i in range(5) %}
+                                    {% if i < pg.get_average_rating() %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <a href="{{ url_for('main.pg_detail', id=pg.id) }}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('main.search') }}" class="btn btn-outline-primary">View All PGs</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="fw-bold">Ready to Find Your Perfect PG?</h2>
+        <p class="lead">Join thousands of students who have found their ideal accommodation through PG Finder</p>
+        <div class="d-flex gap-3 justify-content-center">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg">Get Started</a>
+            {% else %}
+                <a href="{{ url_for('main.search') }}" class="btn btn-light btn-lg">Search PGs</a>
+            {% endif %}
+            {% if not current_user.is_authenticated or current_user.user_type == 'student' %}
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">List Your PG</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

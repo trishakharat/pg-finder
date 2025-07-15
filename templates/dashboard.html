@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Welcome, {{ current_user.full_name }}!</h2>
+            <p class="text-muted">{{ current_user.user_type|title }} Dashboard</p>
+        </div>
+    </div>
+
+    {% if current_user.user_type == 'pg_owner' %}
+    <!-- PG Owner Dashboard -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ total_pgs }}</h3>
+                    <p class="card-text">Total PGs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-success">{{ total_bookings }}</h3>
+                    <p class="card-text">Total Bookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3 class="text-warning">{{ pending_bookings }}</h3>
+                    <p class="card-text">Pending Bookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <a href="{{ url_for('main.add_pg') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add New PG
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h4>My PG Listings</h4>
+            {% if pgs %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>PG Name</th>
+                                <th>Location</th>
+                                <th>Rent</th>
+                                <th>Available Rooms</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pg in pgs %}
+                            <tr>
+                                <td>{{ pg.name }}</td>
+                                <td>{{ pg.city }}, {{ pg.state }}</td>
+                                <td>₹{{ pg.rent_amount }}</td>
+                                <td>{{ pg.available_rooms }}/{{ pg.total_rooms }}</td>
+                                <td>
+                                    {% if pg.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('main.pg_detail', id=pg.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                    <a href="#" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> You haven't added any PGs yet. <a href="{{ url_for('main.add_pg') }}">Add your first PG</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Student Dashboard -->
+    <div class="row">
+        <div class="col-12">
+            <h4>My Bookings</h4>
+            {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>PG Name</th>
+                                <th>Location</th>
+                                <th>Booking Date</th>
+                                <th>Move-in Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.pg.name }}</td>
+                                <td>{{ booking.pg.city }}, {{ booking.pg.state }}</td>
+                                <td>{{ booking.booking_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ booking.move_in_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if booking.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif booking.status == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                    {% elif booking.status == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% else %}
+                                        <span class="badge bg-info">{{ booking.status|title }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('main.pg_detail', id=booking.pg.id) }}" class="btn btn-sm btn-outline-primary">View PG</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> You haven't made any bookings yet. <a href="{{ url_for('main.search') }}">Search for PGs</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

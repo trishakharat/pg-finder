@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3><i class="fas fa-plus"></i> Add New PG</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <!-- Basic Information -->
+                        <h5 class="mb-3">Basic Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.name.label(class="form-label") }}
+                                    {{ form.name(class="form-control") }}
+                                    {% if form.name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.name.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.pg_type.label(class="form-label") }}
+                                    {{ form.pg_type(class="form-select") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="3") }}
+                        </div>
+
+                        <!-- Location -->
+                        <h5 class="mb-3 mt-4">Location</h5>
+                        <div class="mb-3">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control") }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.city.label(class="form-label") }}
+                                    {{ form.city(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.state.label(class="form-label") }}
+                                    {{ form.state(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.pincode.label(class="form-label") }}
+                                    {{ form.pincode(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <h5 class="mb-3 mt-4">Pricing</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.rent_amount.label(class="form-label") }}
+                                    {{ form.rent_amount(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.deposit_amount.label(class="form-label") }}
+                                    {{ form.deposit_amount(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Room Details -->
+                        <h5 class="mb-3 mt-4">Room Details</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.room_type.label(class="form-label") }}
+                                    {{ form.room_type(class="form-select") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.total_rooms.label(class="form-label") }}
+                                    {{ form.total_rooms(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.available_rooms.label(class="form-label") }}
+                                    {{ form.available_rooms(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facilities -->
+                        <h5 class="mb-3 mt-4">Facilities</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.wifi(class="form-check-input") }}
+                                    {{ form.wifi.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.parking(class="form-check-input") }}
+                                    {{ form.parking.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.laundry(class="form-check-input") }}
+                                    {{ form.laundry.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.meals(class="form-check-input") }}
+                                    {{ form.meals.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.ac(class="form-check-input") }}
+                                    {{ form.ac.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.gym(class="form-check-input") }}
+                                    {{ form.gym.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.security(class="form-check-input") }}
+                                    {{ form.security.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check mb-2">
+                                    {{ form.power_backup(class="form-check-input") }}
+                                    {{ form.power_backup.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <h5 class="mb-3 mt-4">Contact Information</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.contact_person.label(class="form-label") }}
+                                    {{ form.contact_person(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.contact_phone.label(class="form-label") }}
+                                    {{ form.contact_phone(class="form-control") }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.contact_email.label(class="form-label") }}
+                                    {{ form.contact_email(class="form-control") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

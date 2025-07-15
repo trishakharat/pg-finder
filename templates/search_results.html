@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Search Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.city.label(class="form-label") }}
+                            {{ form.city(class="form-control") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.pg_type.label(class="form-label") }}
+                            {{ form.pg_type(class="form-select") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.room_type.label(class="form-label") }}
+                            {{ form.room_type(class="form-select") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.min_rent.label(class="form-label") }}
+                            {{ form.min_rent(class="form-control") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.max_rent.label(class="form-label") }}
+                            {{ form.max_rent(class="form-control") }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.facilities.label(class="form-label") }}
+                            {{ form.facilities(class="form-select") }}
+                        </div>
+
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Search Results</h4>
+                <span class="text-muted">{{ pgs|length }} PGs found</span>
+            </div>
+
+            {% if pgs %}
+                <div class="row">
+                    {% for pg in pgs %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card pg-card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ pg.name }}</h5>
+                                <p class="card-text">
+                                    <i class="fas fa-map-marker-alt text-primary"></i> {{ pg.address[:50] }}...
+                                    <br>
+                                    <i class="fas fa-city text-secondary"></i> {{ pg.city }}, {{ pg.state }}
+                                    <br>
+                                    <i class="fas fa-rupee-sign text-success"></i> ₹{{ pg.rent_amount }}/month
+                                    <br>
+                                    <i class="fas fa-bed text-info"></i> {{ pg.room_type|title }} • {{ pg.pg_type|title }}
+                                </p>
+
+                                <div class="mb-2">
+                                    <strong>Facilities:</strong><br>
+                                    {% for facility in pg.get_facilities()[:4] %}
+                                        <span class="facilities-badge">{{ facility }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="rating">
+                                        {% for i in range(5) %}
+                                            {% if i < pg.get_average_rating() %}
+                                                <i class="fas fa-star"></i>
+                                            {% else %}
+                                                <i class="far fa-star"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <small class="text-muted">({{ pg.get_average_rating() }})</small>
+                                    </div>
+                                    <div>
+                                        <span class="badge bg-primary">{{ pg.available_rooms }} rooms available</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <a href="{{ url_for('main.pg_detail', id=pg.id) }}" class="btn btn-primary">View Details</a>
+                                    {% if current_user.is_authenticated and current_user.user_type == 'student' %}
+                                        <a href="{{ url_for('main.book_pg', id=pg.id) }}" class="btn btn-outline-success">Book Now</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No PGs found matching your criteria. Try adjusting your search filters.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
